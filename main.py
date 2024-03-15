@@ -166,8 +166,7 @@ if __name__ == '__main__':
   args = parser.parse_args()
   
   if args.input:
-    # obj = get_want_list(args.input)
-    obj = get_yaml(args.input)
+    obj = get_want_list(args.input)
     if obj:
       if args.book == 'book':
         logger.info('book mode')
