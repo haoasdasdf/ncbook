@@ -185,7 +185,7 @@ if __name__ == '__main__':
         logger.info('one time mode')
         check(obj, need_book)
     else:
-      logger.error(F'bad file format {args.input}')
+      logger.error(F'please check file format and contents {args.input}')
   else:
       logger.error('please check your book list')
 
