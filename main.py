@@ -15,7 +15,7 @@ for h in logger.handlers:
     logger.removeHandler(h)
 
 h = logging.StreamHandler(sys.stdout)
-rt = TimedRotatingFileHandler('ncbook.log', when='D')
+rt = TimedRotatingFileHandler('ncbook.log', when='D', interval=1, backupCount=5)
 
 FORMAT = '%(levelname)s %(asctime)s [%(filename)s:%(lineno)d] [%(funcName)s] %(message)s'
 h.setFormatter(logging.Formatter(FORMAT))
