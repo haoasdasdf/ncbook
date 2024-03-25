@@ -5,10 +5,13 @@ pip install -r requirements.txt
 ```
 
 install google chrome:
+- if you use arm64, please install chromium instead
 ```bash
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo dpkg -i google-chrome-stable_current_amd64.deb
 ```
+
+
 
 
 ```bash
@@ -66,4 +69,11 @@ wantlist file sample:
   - Sat: ['21:00', '22:30', '23:00']
   - Sun: ['21:00', '22:30', '23:00']
 
+```
+
+crontab:
+
+```bash
+* * * * * DISPLAY=:0.0 /path1/python /path2/main.py /path2/want/sample.yaml -b book
+* * * * * DISPLAY=:0.0 /path1/python /path2/main.py /path2/want/sample.json -s 10 -b book
 ```

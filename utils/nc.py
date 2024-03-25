@@ -6,6 +6,7 @@ import sys
 # import requests
 # from useragent_changer import UserAgent
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
@@ -55,7 +56,10 @@ class NC():
     if udir:
       options.add_argument('--user-data-dir=' + udir)
     # options.add_experimental_option("detach", True)
-    self.browser = webdriver.Chrome(options=options)
+    service = Service()
+    ## for arm64
+    # service = Service('/usr/bin/chromedriver')
+    self.browser = webdriver.Chrome(options=options, service=service)
 
     self.wait = WebDriverWait(self.browser, self.wait_time)
 
