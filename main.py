@@ -96,38 +96,7 @@ test_list = [
 USER = os.environ.get('nc_uid')
 PW = os.environ.get('nc_pw')
 
-def check(tc_list, need_book=False):
-  auto = nc.NC(USER, PW, userdata_dir, need_book)
-  for tc in tc_list:
-    auto.teacher = tc['name']
-    auto.tid = tc['id']
-
-    availables = auto.check_schedule(tc)
-    # availables = {'2024/03/05': ['09:30', '12:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'], '2024/03/06': ['09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'], '2024/03/07': ['09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '19:00', '19:30', '20:00', '20:30', '21:00'], '2024/03/04': ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00']}
-    if availables is None:
-      return
-    logger.info(F'{auto.teacher} availables: {availables}')
-    tasks = auto.create_tasks(tc['time'], availables)
-    # tasks = auto.check_bookable(tc)
-    if len(tasks) > 0:
-      logger.info(F'{auto.teacher} can book: {tasks}')
-      logger.info(F'tasks: { tasks}')
-      for task in tasks:
-        callan = False
-        if tc.get('callan') and task.get('time') in tc.get('callan'):
-          callan = True
-        logger.info(F'is callan {callan}')
-        res = auto.book(task, callan=callan)
-        # if res == 1:
-          # logger.info(F'succeed in booking {auto.teacher} {task["date"]} {task["time"]}')
-        if res == 0:
-          logger.warning(F'failed to book {auto.teacher} {task["date"]} {task["time"]}')
-        elif res == -1:
-          logger.error('something wrong')
-    else:
-      logger.info(F'{auto.teacher} availables: {len(tasks)}')
-
-def supervisor(tc_list, sec, need_book=False):
+def check(tc_list, sec=0, need_book=False):
   auto = nc.NC(USER, PW, userdata_dir, need_book)
   for tc in tc_list:
     auto.teacher = tc['name']
@@ -135,27 +104,35 @@ def supervisor(tc_list, sec, need_book=False):
     while True:
       availables = auto.check_schedule(tc)
       # availables = {'2024/03/05': ['09:30', '12:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'], '2024/03/06': ['09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'], '2024/03/07': ['09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '19:00', '19:30', '20:00', '20:30', '21:00'], '2024/03/04': ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00']}
+      if availables is None:
+        return
       logger.info(F'{auto.teacher} availables: {availables}')
       tasks = auto.create_tasks(tc['time'], availables)
+      # tasks = auto.check_bookable(tc)
       if len(tasks) > 0:
         logger.info(F'{auto.teacher} can book: {tasks}')
         logger.info(F'tasks: { tasks}')
         for task in tasks:
+          callan_new = False
           callan = False
-          if tc.get('callan') and task.get('time') in tc.get('callan'):
+          if tc.get('callan_new') and task.get('time') in tc.get('callan_new'):
+            callan_new = True
+          elif tc.get('callan') and task.get('time') in tc.get('callan'):
             callan = True
-          logger.info(F'is callan {callan}')
-          res = auto.book(task, callan=callan)
+          logger.info(F'is callan_new {callan_new}, is callan {callan}')
+          res = auto.book(task, callan_new=callan_new, callan=callan)
           # if res == 1:
-          #   logger.info(F'succeed in booking {auto.teacher} {task["date"]} {task["time"]}')
+            # logger.info(F'succeed in booking {auto.teacher} {task["date"]} {task["time"]}')
           if res == 0:
             logger.warning(F'failed to book {auto.teacher} {task["date"]} {task["time"]}')
           elif res == -1:
             logger.error('something wrong')
       else:
         logger.info(F'{auto.teacher} availables: {len(tasks)}')
-      time.sleep(sec)
-
+      if sec:
+        time.sleep(sec)
+      else:
+        break
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
@@ -178,12 +155,13 @@ if __name__ == '__main__':
       if args.supervise:
         try:
           logger.info(F'supervise mode interval {args.supervise}')
-          supervisor(obj, args.supervise, need_book=need_book)
-        except:
-          logger.error(F'bad supervise interval, please input number of seconds')
+          check(obj, args.supervise, need_book=need_book)
+        except Exception as e:
+          logger.info(F'bad supervise interval, please input number of seconds')
+          logger.error(e)
       else:
         logger.info('one time mode')
-        check(obj, need_book)
+        check(obj, need_book=need_book)
     else:
       logger.error(F'please check file format and contents {args.input}')
   else:

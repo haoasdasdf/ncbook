@@ -56,6 +56,11 @@ def get_want_list(filename):
             return None
           for tm in tms[0]:
             datetime.strptime(tm, '%H:%M')
+        if 'callan_new' in obj:
+          if type(obj['callan_new']) is not list:
+            return None
+          for t in obj['callan_new']:
+            datetime.strptime(t, '%H:%M')
         if 'callan' in obj:
           if type(obj['callan']) is not list:
             return None

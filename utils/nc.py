@@ -60,27 +60,9 @@ class NC():
     self.wait = WebDriverWait(self.browser, self.wait_time)
 
   def __del__(self):
+    self.browser.close()
     self.browser.quit()
     pass
-
-  def test(self):
-    html_file = os.getcwd() + '/' + 'table-linda.html'
-    logger.info(html_file)
-    self.browser.get('file:///' + html_file)
-    to_file(self.browser.page_source, 'table.html')
-    logger.info(self.browser.title)
-    slots = self.browser.find_elements(By.XPATH, '//a[@data-status="available"]')
-    # logger.info(slots)
-
-    for slot in slots:
-      weekday = get_day(slot.get_attribute('data-date'))
-      start_time = slot.get_attribute('data-time')
-      for des in tc_list[0]['time']:
-        wkd = list(des.keys())[0]
-        time_slots = list(des.values())[0]
-        if weekday == weekday_to_number(wkd)  and start_time in time_slots:
-          logger.info(weekday, start_time)
-          slot.click()
 
   def login(self, user, pw):
     url = BASE_URL + LOGIN_PATH
@@ -261,7 +243,7 @@ class NC():
                   )
     return tasks
 
-  def book(self, task, callan=False):
+  def book(self, task, callan_new=False, callan=False):
     self.browser.get(BASE_URL + TEACHER_PATH + str(self.tid))
     if '講師詳細' not in self.browser.title:
       logger.error(F'wrong page for booking {self.browser.title}')
@@ -279,7 +261,11 @@ class NC():
       # to_file(self.browser.page_source, F'navi-{tc["name"]}.html')
       
       # textbook_tab = self.browser.find_element(By.XPATH, '//div[@display-flag="1" and @text-book-category-id="119"]')
-      if callan:
+      if callan_new:
+        # NEW
+        textbook_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//div[not(contains(@class, "hide")) and contains(@class-eng, "Callan Method") and contains(@class-eng, "NEW")]')))
+      elif callan:
+        # OLD
         textbook_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//div[not(contains(@class, "hide")) and @class-eng="Callan Method"]')))
       else:
         textbook_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//div[not(contains(@class, "hide")) and @class-eng="Selection of teaching materials after entering the lesson room"]')))
@@ -288,13 +274,14 @@ class NC():
       # to_file(self.browser.page_source, F'textbook-{self.teacher}.html')
       # self.browser.implicitly_wait(2)
       # chapter_tab = textbook_tab.find_elements(By.XPATH, '//li[@chapter-id="1"]')
-      if callan:
-        chapter_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//li[@chapter-id="102"]')))
-      else:
-        chapter_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//li[@chapter-id="1"]')))
-      chapter_tab.click()
-      logger.info('chapter_tab.click')
-      # to_file(self.browser.page_source, F'chapter-{self.teacher}.html')
+      if not callan_new:
+        if callan:
+          chapter_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//li[@chapter-id="102"]')))
+        else:
+          chapter_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//li[@chapter-id="1"]')))
+        chapter_tab.click()
+        logger.info('chapter_tab.click')
+        # to_file(self.browser.page_source, F'chapter-{self.teacher}.html')
 
       next_btn = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//a[@data-status="available" and @id="chooseReservedSchedule"]')))
       next_btn.click()
