@@ -294,7 +294,7 @@ class NC():
       date_time=F'{slot.get_attribute("data-date")} {slot.get_attribute("data-time")}'
       # logger.info(F'//a[@date-time="{date_time}" and @id="saveReservedSchedule"]')
       confirm_btn = self.wait.until(EC.visibility_of_element_located((By.XPATH, F'//a[@date-time="{date_time}" and @data-substitute_teacher_flg="1"  and @id="saveReservedSchedule"]')))
-      to_file(self.browser.page_source, F'confirm_btn-{self.teacher}.html')
+      # to_file(self.browser.page_source, F'confirm_btn-{self.teacher}.html')
       if self.need_book:
         confirm_btn.click()
         logger.info('confirm_btn.click')
@@ -302,7 +302,7 @@ class NC():
         close_btn = self.wait.until(EC.visibility_of_element_located((By.XPATH, F'//a[@class="btn_style btn_gray close_modal" and @href="#" and contains(text(), "閉じる")]')))
         close_btn.click()
         logger.info('close_btn.click')
-        to_file(self.browser.page_source, F'close_btn-after-{self.teacher}-{datetime.now().strftime("%Y%m%d_%H%M%S")}.html')
+        # to_file(self.browser.page_source, F'close_btn-after-{self.teacher}-{datetime.now().strftime("%Y%m%d_%H%M%S")}.html')
       # to_file(self.browser.page_source, F'confirm_btn-after-{self.teacher}.html')
         logger.info(F'book finished {self.teacher} {dd} {dt}')
       else:
