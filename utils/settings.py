@@ -1,7 +1,9 @@
-userdata_dir='./userdata'
-BASE_URL='https://nativecamp.net'
-LOGIN_PATH='/login'
-FAVOURiTE_PATH='/favorite'
-TEACHER_PATH='/waiting/detail/'
-COIN_PATH='/coin'
+userdata_dir = './userdata'
+BASE_URL = 'https://nativecamp.net'
+LOGIN_PATH = '/login'
+FAVOURiTE_PATH = '/favorite'
+TEACHER_PATH = '/waiting/detail/'
+COIN_PATH = '/coin'
 MINIMUN_COIN = 100
+NORMAL_LESSON_DES = 'Five min Discussion'
+NORMAL_LESSON_CHAPTER_ID = 1

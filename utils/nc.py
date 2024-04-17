@@ -51,11 +51,11 @@ class NC():
     self.need_book = need_book
 
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless=new')
+    # options.add_argument('--headless=new')
     options.add_argument('--no-sandbox')
     if udir:
       options.add_argument('--user-data-dir=' + udir)
-    # options.add_experimental_option("detach", True)
+    options.add_experimental_option("detach", True)
     service = Service()
     ## for arm64
     # service = Service('/usr/bin/chromedriver')
@@ -272,7 +272,8 @@ class NC():
         # OLD
         textbook_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//div[not(contains(@class, "hide")) and @class-eng="Callan Method"]')))
       else:
-        textbook_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//div[not(contains(@class, "hide")) and @class-eng="Selection of teaching materials after entering the lesson room"]')))
+        # textbook_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//div[not(contains(@class, "hide")) and @class-eng="Selection of teaching materials after entering the lesson room"]')))
+        textbook_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, F'//div[not(contains(@class, "hide")) and @class-eng="{NORMAL_LESSON_DES}"]')))
       textbook_tab.click()
       logger.info('textbook_tab.click')
       # to_file(self.browser.page_source, F'textbook-{self.teacher}.html')
@@ -282,7 +283,8 @@ class NC():
         if callan:
           chapter_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//li[@chapter-id="102"]')))
         else:
-          chapter_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//li[@chapter-id="1"]')))
+          # chapter_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//li[@chapter-id="1"]')))
+          chapter_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, F'//li[@chapter-id="{NORMAL_LESSON_CHAPTER_ID}"]')))
         chapter_tab.click()
         logger.info('chapter_tab.click')
         # to_file(self.browser.page_source, F'chapter-{self.teacher}.html')
