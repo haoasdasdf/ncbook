@@ -51,11 +51,11 @@ class NC():
     self.need_book = need_book
 
     options = webdriver.ChromeOptions()
-    # options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
     options.add_argument('--no-sandbox')
     if udir:
       options.add_argument('--user-data-dir=' + udir)
-    options.add_experimental_option("detach", True)
+    # options.add_experimental_option("detach", True)
     service = Service()
     ## for arm64
     # service = Service('/usr/bin/chromedriver')
