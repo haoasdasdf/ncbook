@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import sys
+import platform
 # from bs4 import BeautifulSoup
 # import requests
 # from useragent_changer import UserAgent
@@ -56,8 +57,13 @@ class NC():
     if udir:
       options.add_argument('--user-data-dir=' + udir)
     # options.add_experimental_option("detach", True)
-    service = Service()
-    ## for arm64
+    
+    ## check architecture
+    if platform.uname()[4] == 'aarch64':
+      b_path = '/usr/bin/chromedriver'
+    else:
+      b_path = None
+    service = Service(b_path)
     # service = Service('/usr/bin/chromedriver')
     self.browser = webdriver.Chrome(options=options, service=service)
 
