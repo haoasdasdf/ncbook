@@ -4,13 +4,19 @@ install pip requirements
 pip install -r requirements.txt
 ```
 
-install google chrome:
+~~install google chrome:~~
 - if you use arm64, please install chromium instead
 ```bash
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo dpkg -i google-chrome-stable_current_amd64.deb
 ```
 
+
+install chromium
+in order to be compatible with arm64, using chromium instead of chrome
+```bash
+apt install chromium chromium-driver
+```
 
 
 
