@@ -52,13 +52,14 @@ class NC():
     self.need_book = need_book
 
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless=new')
+    options.add_argument('--headless=chrome')
     options.add_argument('--no-sandbox')
     if udir:
       options.add_argument('--user-data-dir=' + udir)
     # options.add_experimental_option("detach", True)
   
     service = Service('/usr/bin/chromedriver')
+    
     self.browser = webdriver.Chrome(options=options, service=service)
 
     self.wait = WebDriverWait(self.browser, self.wait_time)
@@ -248,7 +249,8 @@ class NC():
     return tasks
 
   def book(self, task, callan_new=False, callan=False):
-    self.browser.get(BASE_URL + TEACHER_PATH + str(self.tid))
+    res = 1
+    # self.browser.get(BASE_URL + TEACHER_PATH + str(self.tid))
     if '講師詳細' not in self.browser.title:
       logger.error(F'wrong page for booking {self.browser.title}')
       return -1
@@ -312,8 +314,10 @@ class NC():
     except TimeoutException as e:
       logger.error(F'cannot find element {e}')
       to_file(self.browser.page_source, F'failed-{self.teacher}-{datetime.now().strftime("%Y%m%d_%H%M%S")}.html')
-      return 0
-    return 1
+      res = 0
+    finally:
+      self.browser.get(BASE_URL + TEACHER_PATH + str(self.tid))
+    return res
 
 
   
