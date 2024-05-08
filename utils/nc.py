@@ -52,7 +52,7 @@ class NC():
     self.need_book = need_book
 
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless=chrome')
+    options.add_argument('--headless=new')
     options.add_argument('--no-sandbox')
     if udir:
       options.add_argument('--user-data-dir=' + udir)
