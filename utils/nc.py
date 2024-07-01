@@ -43,7 +43,7 @@ logger.setLevel('INFO')
 
 class NC():
   def __init__(self, uid, pw, udir=None, need_book=False) -> None:
-    self.wait_time = 5
+    self.wait_time = 10
     self.teacher = ''
     self.tid = 0
 
@@ -313,7 +313,8 @@ class NC():
         logger.info(F'test finished {self.teacher} {dd} {dt}')
     except TimeoutException as e:
       logger.error(F'cannot find element {e}')
-      to_file(self.browser.page_source, F'failed-{self.teacher}-{datetime.now().strftime("%Y%m%d_%H%M%S")}.html')
+      # to_file(self.browser.page_source, F'failed-{self.teacher}-{datetime.now().strftime("%Y%m%d_%H%M%S")}.html')
+      self.browser.get_screenshot_as_file(F'failed-{self.teacher}-{datetime.now().strftime("%Y%m%d_%H%M%S")}.png')
       res = 0
     finally:
       self.browser.get(BASE_URL + TEACHER_PATH + str(self.tid))
