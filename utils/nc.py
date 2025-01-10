@@ -263,13 +263,14 @@ class NC():
       if not slot.get_attribute('data-status') == 'available':
         logger.warning(F'slot not available')
       slot.click()
-      navi_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//div[@class="tbs-wrap category"]')))
+      # navi_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//div[@class="tbs-wrap category"]')))
       # to_file(self.browser.page_source, F'navi-{tc["name"]}.html')
       
       # textbook_tab = self.browser.find_element(By.XPATH, '//div[@display-flag="1" and @text-book-category-id="119"]')
       if callan_new:
         # NEW
         textbook_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//div[not(contains(@class, "hide")) and contains(@class-eng, "Callan Method") and contains(@class-eng, "NEW")]')))
+        # textbook_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//div[not(contains(@class, "hide")) and contains(@text-book-category-id, "135") and contains(@category-id, "135")]')))
       elif callan:
         # OLD
         textbook_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//div[not(contains(@class, "hide")) and @class-eng="Callan Method"]')))
@@ -292,7 +293,9 @@ class NC():
         # to_file(self.browser.page_source, F'chapter-{self.teacher}.html')
 
       next_btn = self.wait.until(EC.visibility_of_element_located((By.XPATH, '//a[@data-status="available" and @id="chooseReservedSchedule"]')))
-      next_btn.click()
+      # next_btn = self.wait.until(EC.element_to_be_clickable((By.XPATH, '//a[@data-status="available" and @id="chooseReservedSchedule"]')))
+      # next_btn.click()
+      self.browser.execute_script("arguments[0].click();", next_btn)
       logger.info('next_btn.click')
       # to_file(self.browser.page_source, F'next_btn-{self.teacher}.html')
       date_time=F'{slot.get_attribute("data-date")} {slot.get_attribute("data-time")}'
@@ -313,7 +316,7 @@ class NC():
         logger.info(F'test finished {self.teacher} {dd} {dt}')
     except TimeoutException as e:
       logger.error(F'cannot find element {e}')
-      # to_file(self.browser.page_source, F'failed-{self.teacher}-{datetime.now().strftime("%Y%m%d_%H%M%S")}.html')
+      to_file(self.browser.page_source, F'failed-{self.teacher}-{datetime.now().strftime("%Y%m%d_%H%M%S")}.html')
       self.browser.get_screenshot_as_file(F'failed-{self.teacher}-{datetime.now().strftime("%Y%m%d_%H%M%S")}.png')
       res = 0
     finally:
